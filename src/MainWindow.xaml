@@ -1,0 +1,292 @@
+﻿<Window
+    x:Class="Quake2TextureConverter.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Quake2TextureConverter"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Wal Converter"
+    Width="700"
+    Height="770"
+    d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel,
+                                     IsDesignTimeCreatable=False}"
+    FontFamily="Consolas"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    </Window.Resources>
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Offset="0.0" Color="{Binding StyleColor1}" />
+            <GradientStop Offset="1.0" Color="{Binding StyleColor2}" />
+        </LinearGradientBrush>
+    </Window.Background>
+    <Window.InputBindings>
+        <KeyBinding
+            Key="R"
+            Command="{Binding RandomStyleColorsCommand}"
+            Modifiers="Control" />
+    </Window.InputBindings>
+    <Grid Margin="14,10,14,14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Label
+            Grid.Row="0"
+            HorizontalAlignment="Center"
+            FontSize="24">
+            .WAL File Converter
+        </Label>
+        <!--  Colormap  -->
+        <GroupBox
+            Grid.Row="1"
+            Grid.Column="0"
+            Padding="5"
+            BorderBrush="Black"
+            BorderThickness="1"
+            Header="Colormap (.pcx)">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="4"
+                    IsReadOnly="False"
+                    Text="{Binding ColormapPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="4,0,0,0"
+                    Padding="4"
+                    Command="{Binding SelectColormapCommand}">
+                    File...
+                </Button>
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Margin="0,4,0,0"
+                    TextWrapping="Wrap">
+                    This app comes with the Quake2 colormap.pcx file, so you only need to change
+                    this if you are using a different colormap.
+                </TextBlock>
+            </Grid>
+        </GroupBox>
+        <!--  Texture Folder  -->
+        <GroupBox
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="0,10,0,0"
+            Padding="5"
+            BorderBrush="Black"
+            BorderThickness="1"
+            Header="Texture Folder">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="4"
+                    IsReadOnly="False"
+                    Text="{Binding TextureFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="4,0,0,0"
+                    Padding="4"
+                    Command="{Binding SelectTextureFolderCommand}">
+                    Folder...
+                </Button>
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Margin="0,4,0,0"
+                    TextWrapping="Wrap">
+                    This app will recursively find all .wal files in the given texture folder and subfolders.<LineBreak />
+                    Example folders you can use:<LineBreak />
+                    <Run xml:space="preserve"> - C:/MyGames/Quake2/           (Quake2 root folder)</Run><LineBreak />
+                    <Run xml:space="preserve"> - C:/MyGames/Quake2/jump/      (Quake2 mod folder)</Run><LineBreak />
+                    <Run xml:space="preserve"> - C:/AnyFolder/AnotherFolder/  (any folder that contains textures)</Run>
+                </TextBlock>
+            </Grid>
+        </GroupBox>
+        <!--  Output Folder  -->
+        <GroupBox
+            Grid.Row="3"
+            Grid.Column="0"
+            Margin="0,10,0,0"
+            Padding="5"
+            BorderBrush="Black"
+            BorderThickness="1"
+            Header="Output Folder">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="4"
+                    IsReadOnly="False"
+                    Text="{Binding OutputFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="4,0,0,0"
+                    Padding="4"
+                    Command="{Binding SelectOutputFolderCommand}">
+                    Folder...
+                </Button>
+            </Grid>
+        </GroupBox>
+        <!--  Output Options  -->
+        <GroupBox
+            Grid.Row="4"
+            Grid.Column="0"
+            Margin="0,10,0,0"
+            Padding="5"
+            BorderBrush="Black"
+            BorderThickness="1"
+            Header="Output Options">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <CheckBox
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding IsPngChecked, Mode=TwoWay}"
+                        IsThreeState="False" />
+                    <Label Margin="4,0,0,0">Convert to PNG</Label>
+                    <CheckBox
+                        Margin="20,0,0,0"
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding IsReplaceTransparentColorChecked, Mode=TwoWay}"
+                        IsEnabled="{Binding IsPngChecked, Mode=OneWay}"
+                        IsThreeState="False" />
+                    <Label Margin="4,0,0,0" IsEnabled="{Binding IsPngChecked, Mode=OneWay}">Replace Transparent Color with Alpha</Label>
+                </StackPanel>
+                <StackPanel
+                    Grid.Row="1"
+                    Margin="0,4,0,0"
+                    Orientation="Horizontal">
+                    <CheckBox
+                        VerticalAlignment="Center"
+                        IsChecked="{Binding IsJpgChecked, Mode=TwoWay}"
+                        IsThreeState="False" />
+                    <Label Margin="4,0,0,0">Convert to JPG</Label>
+                    <TextBox
+                        Width="36"
+                        Margin="20,0,0,0"
+                        Padding="4"
+                        IsEnabled="{Binding IsJpgChecked, Mode=OneWay}"
+                        Text="{Binding JpgQuality, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Margin="4,0,0,0" IsEnabled="{Binding IsJpgChecked, Mode=OneWay}">JPG Quality</Label>
+                </StackPanel>
+                <TextBlock
+                    Grid.Row="2"
+                    Margin="0,10,0,0"
+                    TextWrapping="Wrap">
+                    In the output folder, choose whether to keep the source folder hierarchy or
+                    to flatten everything, placing all files next to each other.  If duplicate filenames exist
+                    when flattening, the last write wins.
+                </TextBlock>
+                <StackPanel
+                    Grid.Row="3"
+                    Margin="0,6,0,0"
+                    Orientation="Horizontal">
+                    <RadioButton
+                        VerticalContentAlignment="Center"
+                        Content="Maintain Folder Structure"
+                        IsChecked="{Binding IsMaintainFolderStructureChecked, Mode=TwoWay}" />
+                    <RadioButton
+                        Margin="20,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Content="Flatten"
+                        IsChecked="{Binding IsFlattenChecked, Mode=TwoWay}" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <!--  Convert  -->
+        <GroupBox
+            Grid.Row="5"
+            Grid.Column="0"
+            Margin="0,10,0,0"
+            Padding="5"
+            BorderBrush="Black"
+            BorderThickness="1"
+            Header="Convert">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Button
+                        Padding="4"
+                        Command="{Binding ListTexturesCommand}"
+                        IsEnabled="{Binding IsCommandInProgress, Converter={StaticResource InverseBooleanConverter}}">
+                        Count Textures
+                    </Button>
+                    <Button
+                        Margin="10,0,0,0"
+                        Padding="4"
+                        Command="{Binding ConvertTexturesCommand}"
+                        IsEnabled="{Binding IsCommandInProgress, Converter={StaticResource InverseBooleanConverter}}">
+                        Convert
+                    </Button>
+                </StackPanel>
+                <Button
+                    Grid.Row="0"
+                    Padding="4"
+                    HorizontalAlignment="Right"
+                    Command="{Binding ClearLogCommand}">
+                    Clear Log
+                </Button>
+                <TextBox
+                    x:Name="LogMessagesTextBox"
+                    Grid.Row="1"
+                    Margin="0,10,0,0"
+                    IsReadOnly="True"
+                    MaxLines="8"
+                    MinLines="8"
+                    Text="{Binding LogMessages}"
+                    VerticalScrollBarVisibility="Visible" />
+            </Grid>
+        </GroupBox>
+        <Label Grid.Row="6" HorizontalAlignment="Right">Created by: 754</Label>
+    </Grid>
+</Window>
